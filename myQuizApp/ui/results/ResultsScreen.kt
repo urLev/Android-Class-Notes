@@ -1,5 +1,6 @@
 package com.goble.myquizapp.ui.results
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,23 +16,28 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import com.goble.myquizapp.data.Question
+import com.goble.myquizapp.ui.navigation.Screen
 import com.goble.myquizapp.ui.question.QuizViewModel
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResultsScreeen(
+fun ResultsScreen(
     onPlayAgain: () -> Unit,
-    backStackEntry: NavBackStackEntry
+    viewModel: QuizViewModel = QuizViewModel()
 ) {
-    val viewModel: QuizViewModel = viewModel(backStackEntry)
-    val state = viewModel.uiState
+    val state by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {

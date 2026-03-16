@@ -1,6 +1,12 @@
 package com.goble.myquizapp.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,11 +15,14 @@ import androidx.navigation.navArgument
 import com.goble.myquizapp.data.Category
 import com.goble.myquizapp.ui.home.HomeScreen
 import com.goble.myquizapp.ui.question.QuestionScreen
-import com.goble.myquizapp.ui.results.ResultsScreeen
+import com.goble.myquizapp.ui.question.QuizViewModel
+import com.goble.myquizapp.ui.results.ResultsScreen
 
 @Composable
-fun QuizNavGraph() {
-    val navController = rememberNavController()
+fun QuizNavGraph(
+    navController: NavHostController = rememberNavController()
+) {
+    val quizViewModel: QuizViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -37,6 +46,7 @@ fun QuizNavGraph() {
 
             QuestionScreen(
                 category = category,
+                viewModel = quizViewModel,
                 onQuizFinished = {
                     // KEY: pop all question screens off the stack so
                     // pressing Back from ResultsScreen goes straight Home
@@ -49,13 +59,13 @@ fun QuizNavGraph() {
             )
         }
         // ----- Result ----------------------------------------------
-        composable(Screen.Results.route) { backStackEntry ->
-            ResultsScreeen(
+        composable(Screen.Results.route) {
+            ResultsScreen(
+                viewModel = quizViewModel,
                 onPlayAgain = {
                     // Simply pop Results; Home is now on top of the stack
                     navController.popBackStack()
-                },
-                backStackEntry = backStackEntry
+                }
             )
         }
     }

@@ -1,12 +1,13 @@
 package com.goble.myquizapp.ui.question
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.goble.myquizapp.data.Category
 import com.goble.myquizapp.data.Question
 import com.goble.myquizapp.data.QuestionRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 data class QuizUIState(
     val questions: List<Question> = emptyList(),
@@ -22,35 +23,58 @@ data class QuizUIState(
 }
 
 class QuizViewModel: ViewModel() {
-    var uiState by mutableStateOf(QuizUIState())
+    private val _uiState = MutableStateFlow(QuizUIState())
+    val uiState: StateFlow<QuizUIState> = _uiState.asStateFlow()
+//    var uiState by mutableStateFlow(QuizUIState())
 
     fun startQuiz(category: Category) {
-        if (uiState.questions.isNotEmpty()) return
+        if (uiState.value.questions.isNotEmpty()) return
         val questions = QuestionRepository.getQuestions(category)
-        uiState = QuizUIState(questions = questions)
+//        uiState = QuizUIState(questions = questions)
+        _uiState.update { currentState ->
+            currentState.copy(questions = questions)
+        }
     }
 
     fun selectAnswer(optionIndex:Int) {
-        if(uiState.selectedOptionIndex != null) return
-        uiState = uiState.copy(selectedOptionIndex = optionIndex)
+        if(uiState.value.selectedOptionIndex != null) return
+//        uiState = uiState.value.copy(selectedOptionIndex = optionIndex)
+        _uiState.update { currentState ->
+            currentState.copy(selectedOptionIndex = optionIndex)
+        }
     }
 
     fun nextQuestion() {
-        val current = uiState.currentQuestion ?: return
-        val isCorrect = uiState.selectedOptionIndex == current.answer
-        val newAnswers = uiState.answers + isCorrect
-        val nextIndex = uiState.currentIndex + 1
-        val finished = nextIndex >= uiState.totalQuestions
+        val current = uiState.value.currentQuestion ?: return
+        val isCorrect = uiState.value.selectedOptionIndex == current.answer
+        val newAnswers = uiState.value.answers + isCorrect
+        val nextIndex = uiState.value.currentIndex + 1
+        val finished = nextIndex >= uiState.value.totalQuestions
 
-        uiState = uiState.copy(
-            currentIndex = nextIndex,
-            selectedOptionIndex = null,
-            answers = newAnswers,
-            isFinished = finished
-        )
+//        uiState = uiState.copy(
+//            currentIndex = nextIndex,
+//            selectedOptionIndex = null,
+//            answers = newAnswers,
+//            isFinished = finished
+//        )
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentIndex = nextIndex,
+                selectedOptionIndex = null,
+                answers = newAnswers,
+                isFinished = finished
+            )
+        }
     }
 
     fun resetQuiz() {
-        uiState = QuizUIState()
+//        uiState = QuizUIState()
+        _uiState.value = QuizUIState()
+
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        print("viewModel cleared")
     }
 }

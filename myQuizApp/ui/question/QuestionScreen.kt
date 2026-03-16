@@ -16,9 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goble.myquizapp.data.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,9 +27,9 @@ import com.goble.myquizapp.data.Category
 fun QuestionScreen(
     category: Category,
     onQuizFinished: () -> Unit,
-    viewModel: QuizViewModel = viewModel()
+    viewModel: QuizViewModel
 ) {
-    val state  = viewModel.uiState
+    val state by viewModel.uiState.collectAsState()
 
     // Initialize the quiz once when this screen is first shown
     LaunchedEffect(category) {
