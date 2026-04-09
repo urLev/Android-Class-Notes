@@ -25,7 +25,7 @@ private fun parseWeatherData(obj: JSONObject): WeatherData = WeatherData(
     longitude = obj.optString("latitude").toDouble(),
     latitude = obj.optString("latitude").toDouble(),
     current = parseCurrentWeather(obj),
-    units = parseUnits(obj),
+    units = parseUnits(obj.getJSONObject("current_units")),
     daily = parseDaily(obj)
 )
 
@@ -33,8 +33,8 @@ private fun parseCurrentWeather(obj: JSONObject): CurrentWeather {
     val current = obj.getJSONObject("current")
     
     return CurrentWeather(
-        temperature = current.optDouble("temperature_2m"),
-        feelsLike = current.optDouble("apparent_temperature"),
+        temperature = current.getDouble("temperature_2m"),
+        feelsLike = current.getDouble("apparent_temperature"),
         weatherCode = current.optInt("weather_code"),
         precipitation = current.optDouble("precipitation")
     )
@@ -45,13 +45,23 @@ private fun parseUnits(obj: JSONObject): WeatherUnits = WeatherUnits(
     precipitationUnit = obj.optString("precipitation")
 )
 
-private fun parseDaily(obj: JSONObject): DailyWeather {
+private fun parseDaily(obj: JSONObject): List<DailyWeather> {
+    val forecast = mutableListOf<DailyWeather>()
+
     val daily = obj.getJSONObject("daily")
+    val dates = daily.getJSONArray("time")
     val highs = daily.getJSONArray("temperature_2m_max")
     val lows = daily.getJSONArray("temperature_2m_min")
 
-    return DailyWeather(
-        weeklyHighs = highs as List<Double>,
-        weeklyLows = lows as List<Double>
-    )
+    for (i in 0 until highs.length()) {
+        forecast.add(
+            DailyWeather(
+                date = dates.optString(i),
+                high = highs.optDouble(i),
+                low = lows.optDouble(i)
+            )
+        )
+    }
+
+    return forecast
 }

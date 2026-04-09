@@ -8,11 +8,18 @@ data class WeatherData(
     val latitude: Double,
     val current: CurrentWeather,
     val units: WeatherUnits,
-    val daily: DailyWeather
+//    val daily: DailyWeather
+    val daily: List<DailyWeather> = emptyList()
+)
+
+data class DailyWeather(
+    val date: String,
+    val high: Double,
+    val low: Double
 )
 
 @Serializable
-data class DailyWeather(
+data class OldDailyWeather(
     @SerialName("temperature_2m_max")
     val weeklyHighs: List<Double>,
     @SerialName("temperature_2m_min")

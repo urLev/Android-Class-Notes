@@ -28,12 +28,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
+
+//    compilerOptions {
+//        jvmTarget.set(JvmTarget.JVM_11)
+//    }
+//    kotlinOptions {
+//        jvmTarget = "21"
+//    }
+
+    kotlin {
+        jvmToolchain(21)
     }
+
     buildFeatures {
         compose = true
     }
@@ -50,11 +59,15 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
+    implementation(libs.androidx.compose.material.icons.extended.android)
+
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.retrofit.scalars)
     implementation(libs.retrofit)
-    implementation(libs.okhttp3)
+    implementation(libs.okhttp3.okhttp3)
     implementation(libs.okhttp3.logging)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.material3)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
