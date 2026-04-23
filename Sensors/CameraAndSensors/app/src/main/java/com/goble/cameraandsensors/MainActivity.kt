@@ -12,7 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.goble.cameraandsensors.ViewModel.SensorViewModel
+import com.goble.cameraandsensors.views.BallGame
 import com.goble.cameraandsensors.views.SensorScreen
+import com.goble.cameraandsensors.views.TiltCircleScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +28,9 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.fillMaxSize(),
                 color = Color(0xFF1A1A1A)
             ) {
-                SensorScreen(viewModel)
+//                SensorScreen(viewModel)
+//                BallGame(viewModel)
+                TiltCircleScreen()
             }
         }
     }
